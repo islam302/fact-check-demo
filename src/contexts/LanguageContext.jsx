@@ -14,7 +14,7 @@ export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
     // Check localStorage first, then default to Arabic
     const saved = localStorage.getItem('language');
-    if (saved === 'arabic' || saved === 'english' || saved === 'french') {
+    if (saved === 'arabic' || saved === 'english') {
       return saved;
     }
     return 'arabic'; // Default to Arabic
@@ -27,9 +27,6 @@ export const LanguageProvider = ({ children }) => {
     if (language === 'arabic') {
       document.documentElement.setAttribute('dir', 'rtl');
       document.documentElement.setAttribute('lang', 'ar');
-    } else if (language === 'french') {
-      document.documentElement.setAttribute('dir', 'ltr');
-      document.documentElement.setAttribute('lang', 'fr');
     } else {
       document.documentElement.setAttribute('dir', 'ltr');
       document.documentElement.setAttribute('lang', 'en');
@@ -40,8 +37,8 @@ export const LanguageProvider = ({ children }) => {
   }, [language]);
 
   const toggleLanguage = () => {
-    // Cycle through arabic -> english -> french -> arabic
-    setLanguage(prev => (prev === 'arabic' ? 'english' : prev === 'english' ? 'french' : 'arabic'));
+    // Toggle between arabic and english
+    setLanguage(prev => (prev === 'arabic' ? 'english' : 'arabic'));
   };
 
   const value = {
