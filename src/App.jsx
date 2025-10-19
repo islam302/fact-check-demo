@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
 import { LanguageToggle } from "./components/LanguageToggle";
+import SourceStatistics from "./components/SourceStatistics";
 import joinLogo from "./assets/join-logo.jpg";
 
 // ======= Config =======
@@ -218,6 +219,16 @@ function AINeonFactChecker() {
   const [err, setErr] = useState("");
   const [composingNews, setComposingNews] = useState(false);
   const [composingTweet, setComposingTweet] = useState(false);
+  const textareaRef = useRef(null);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.min(textarea.scrollHeight, 400) + 'px';
+    }
+  }, [query]);
 
   async function handleCheck() {
     setErr("");
@@ -276,6 +287,7 @@ function AINeonFactChecker() {
         sources: Array.isArray(data.sources) ? data.sources : [],
         news_article: data.news_article || null,
         x_tweet: data.x_tweet || null,
+        source_statistics: data.source_statistics || null,
       });
       
     } catch (e) {
@@ -643,8 +655,9 @@ function AINeonFactChecker() {
             <label className="text-sm text-white/70">
               {T.inputLabel}
             </label>
-            <textarea
-              className="min-h-[250px] sm:min-h-[280px] rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 focus:outline-none focus:ring-2 transition-colors resize-none bg-[#0b1327] border border-white/20 focus:ring-indigo-400/60 shadow-[0_0_20px_rgba(99,102,241,.08)] text-white placeholder-white/60"
+            <motion.textarea
+              ref={textareaRef}
+              className="min-h-[60px] max-h-[400px] rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 focus:outline-none focus:ring-2 transition-all duration-300 resize-none bg-[#0b1327] border border-white/20 focus:ring-indigo-400/60 shadow-[0_0_20px_rgba(99,102,241,.08)] text-white placeholder-white/60 overflow-y-auto"
               placeholder={T.placeholder}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -654,8 +667,21 @@ function AINeonFactChecker() {
                   handleCheck();
                 }
               }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'rgba(99, 102, 241, 0.6)';
+                e.target.style.boxShadow = '0 0 30px rgba(99, 102, 241, 0.15)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.target.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.08)';
+              }}
               aria-label={T.ariaInput}
               aria-describedby="input-help"
+              rows={1}
+              whileFocus={{ 
+                scale: 1.01,
+                transition: { duration: 0.2 }
+              }}
             />
 
             <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
@@ -815,12 +841,26 @@ function AINeonFactChecker() {
                   </div>
                 </motion.div>
 
+                {/* Source Statistics */}
+                {result.source_statistics && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <SourceStatistics 
+                      statistics={result.source_statistics} 
+                      language={language}
+                    />
+                  </motion.div>
+                )}
+
                 {/* Sources */}
                 <motion.div 
                   className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                  transition={{ delay: 0.4 }}
                 >
                   <div className="flex items-center gap-3 mb-5">
                     <NeonDot color="rgba(56,189,248,1)" />
@@ -834,7 +874,7 @@ function AINeonFactChecker() {
                           key={i}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.4 + i * 0.1 }}
+                          transition={{ delay: 0.5 + i * 0.1 }}
                         >
                           <LinkChip href={s?.url} label={s?.title} big />
                         </motion.li>
@@ -845,7 +885,7 @@ function AINeonFactChecker() {
                       className="text-center py-8 text-white/60"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 }}
+                      transition={{ delay: 0.5 }}
                     >
                       {T.noSources}
                     </motion.p>
@@ -857,7 +897,7 @@ function AINeonFactChecker() {
                   className="flex gap-3 flex-wrap justify-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: 0.6 }}
                 >
                   {!result.news_article && (
                     <motion.button
@@ -926,7 +966,7 @@ function AINeonFactChecker() {
                     className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    transition={{ delay: 0.7 }}
                   >
                     <div className="flex items-center justify-between gap-4 mb-4">
                       <div className="flex items-center gap-3">
@@ -1028,7 +1068,7 @@ function AINeonFactChecker() {
                     className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
+                    transition={{ delay: 0.8 }}
                   >
                     <div className="flex items-center justify-between gap-4 mb-4">
                       <div className="flex items-center gap-3">
@@ -1191,7 +1231,7 @@ function AINeonFactChecker() {
                 </p>
                 <div className="flex gap-3">
                   <motion.a
-                    href="https://www.linkedin.com/company/joinsoftwave"
+                    href="https://www.linkedin.com/company/join-softwave/?viewAsMember=true"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors"
