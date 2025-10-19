@@ -459,7 +459,7 @@ function AINeonFactChecker() {
   const renderedTalk = useMemo(() => renderTalkSmart(result?.talk || ""), [result?.talk]);
 
   return (
-    <div dir={isArabic ? 'rtl' : 'ltr'} className="min-h-screen relative overflow-hidden transition-colors duration-500 px-3 sm:px-0 bg-[#05070e] text-white">
+    <div dir={isArabic ? 'rtl' : 'ltr'} className="min-h-screen relative overflow-hidden transition-colors duration-500 px-2 sm:px-4 md:px-6 lg:px-8 xl:px-0 bg-[#05070e] text-white">
       {/* Animated gradient background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-1/4 -right-1/4 w-[60vw] h-[60vw] rounded-full blur-3xl bg-[radial-gradient(circle_at_center,_rgba(88,101,242,0.18),_transparent_60%)] animate-slow-pulse" />
@@ -468,7 +468,7 @@ function AINeonFactChecker() {
 
       {/* Language Toggle */}
       <div
-        className="absolute z-20 flex sm:flex-col flex-row gap-2 sm:gap-4 top-2 left-2 sm:top-6 sm:left-6 scale-75 sm:scale-100"
+        className="absolute z-20 flex flex-row sm:flex-col gap-2 sm:gap-4 top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 scale-75 sm:scale-90 md:scale-100"
         style={{ paddingTop: 'max(env(safe-area-inset-top), 0.25rem)' }}
       >
         <LanguageToggle />
@@ -479,7 +479,7 @@ function AINeonFactChecker() {
         initial={{ opacity: 0, y: -10, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8 }}
-        className="mx-auto pt-16 sm:pt-10 flex flex-col items-center gap-4"
+        className="mx-auto pt-12 sm:pt-8 md:pt-10 flex flex-col items-center gap-3 sm:gap-4"
       >
         <motion.div
           className="relative mb-4"
@@ -492,7 +492,7 @@ function AINeonFactChecker() {
           <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-indigo-400/20 via-purple-400/20 to-teal-400/20 blur-xl animate-pulse delay-300" />
           
           {/* Circular Logo Container */}
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 mx-auto">
+          <div className="relative w-20 h-20 xs:w-24 xs:h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 xl:w-40 xl:h-40 mx-auto">
             {/* Rotating Stars Orbit */}
             <div className="absolute inset-0">
               {[...Array(12)].map((_, i) => (
@@ -627,10 +627,10 @@ function AINeonFactChecker() {
             <div className="absolute -inset-6 rounded-full border border-white/5 animate-spin-slow" />
         </div>
         </motion.div>
-        <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-center">
+        <h1 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-center px-2">
           {T.title}
         </h1>
-        <p className="text-xs sm:text-sm md:text-base text-center max-w-[90vw] sm:max-w-xl md:max-w-2xl text-white/70">
+        <p className="text-xs xs:text-sm sm:text-base md:text-lg text-center max-w-[95vw] xs:max-w-[90vw] sm:max-w-xl md:max-w-2xl lg:max-w-3xl text-white/70 px-2 leading-relaxed">
           {language === 'arabic' ? (
             <>
               أدخل الخبر، وسنبحث ونحلل ونرجّع لك <span className="text-teal-300">{TRANSLATIONS.arabic.status}</span>،
@@ -648,8 +648,8 @@ function AINeonFactChecker() {
       </motion.div>
 
       {/* Main card */}
-      <div className="relative z-10 mx-auto mt-6 sm:mt-8 w-full max-w-3xl p-1 rounded-2xl bg-gradient-to-r from-indigo-500/30 via-fuchsia-500/30 to-teal-500/30">
-        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#0a0f1c]/70 shadow-[inset_0_0_0_1px_rgba(255,255,255,.06)]">
+      <div className="relative z-10 mx-auto mt-4 sm:mt-6 md:mt-8 w-full max-w-xs xs:max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl p-1 rounded-2xl bg-gradient-to-r from-indigo-500/30 via-fuchsia-500/30 to-teal-500/30">
+        <div className="rounded-2xl backdrop-blur-xl p-3 xs:p-4 sm:p-5 md:p-6 lg:p-8 bg-[#0a0f1c]/70 shadow-[inset_0_0_0_1px_rgba(255,255,255,.06)]">
           {/* Input */}
           <div className="flex flex-col gap-3">
             <label className="text-sm text-white/70">
@@ -657,7 +657,7 @@ function AINeonFactChecker() {
             </label>
             <motion.textarea
               ref={textareaRef}
-              className="min-h-[60px] max-h-[400px] rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 focus:outline-none focus:ring-2 transition-all duration-300 resize-none bg-[#0b1327] border border-white/20 focus:ring-indigo-400/60 shadow-[0_0_20px_rgba(99,102,241,.08)] text-white placeholder-white/60 overflow-y-auto"
+              className="min-h-[50px] xs:min-h-[60px] max-h-[300px] sm:max-h-[400px] rounded-xl px-3 xs:px-4 sm:px-5 md:px-6 py-2 xs:py-2.5 sm:py-3 md:py-4 focus:outline-none focus:ring-2 transition-all duration-300 resize-none bg-[#0b1327] border border-white/20 focus:ring-indigo-400/60 shadow-[0_0_20px_rgba(99,102,241,.08)] text-white placeholder-white/60 overflow-y-auto text-sm xs:text-base"
               placeholder={T.placeholder}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -684,11 +684,11 @@ function AINeonFactChecker() {
               }}
             />
 
-            <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+            <div className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 flex-wrap justify-center sm:justify-start">
               <motion.button
                 onClick={handleCheck}
                 disabled={loading}
-                className="relative px-5 py-3 sm:px-8 sm:py-4 rounded-2xl font-semibold sm:font-bold text-base sm:text-lg overflow-hidden transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed group focus:outline-none focus:ring-4 focus:ring-indigo-400/50 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_20px_40px_rgba(99,102,241,.4)]"
+                className="relative px-4 xs:px-5 sm:px-6 md:px-8 py-2.5 xs:py-3 sm:py-3.5 md:py-4 rounded-xl xs:rounded-2xl font-semibold sm:font-bold text-sm xs:text-base sm:text-lg overflow-hidden transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed group focus:outline-none focus:ring-4 focus:ring-indigo-400/50 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_20px_40px_rgba(99,102,241,.4)] w-full xs:w-auto"
                 whileHover={{ 
                   scale: 1.05,
                   boxShadow: '0_25px_50px_rgba(99,102,241,.6)'
@@ -762,7 +762,7 @@ function AINeonFactChecker() {
               {result && (
                 <motion.button
                   onClick={copyAll}
-                  className="px-5 py-2.5 rounded-xl transition font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400/50 bg-white/10 hover:bg-white/15 border border-white/10"
+                  className="px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg xs:rounded-xl transition font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400/50 bg-white/10 hover:bg-white/15 border border-white/10 text-sm xs:text-base w-full xs:w-auto"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label={T.copyVerificationAria}
@@ -811,15 +811,15 @@ function AINeonFactChecker() {
               >
                 {/* Case */}
                 <motion.div 
-                  className="rounded-2xl p-6 sm:p-7 bg-gradient-to-br from-emerald-600/90 to-teal-500/80 shadow-[0_15px_50px_rgba(16,185,129,.4)]"
+                  className="rounded-2xl p-4 xs:p-5 sm:p-6 md:p-7 bg-gradient-to-br from-emerald-600/90 to-teal-500/80 shadow-[0_15px_50px_rgba(16,185,129,.4)]"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-between gap-3 xs:gap-4 flex-wrap">
+                    <div className="flex items-center gap-2 xs:gap-3">
                       <NeonDot color="rgba(16,185,129,1)" />
-                      <h3 className="text-2xl font-extrabold">{T.status}</h3>
+                      <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold">{T.status}</h3>
                     </div>
                     <Badge>{result.case}</Badge>
                   </div>
@@ -827,16 +827,16 @@ function AINeonFactChecker() {
 
                 {/* Talk */}
                 <motion.div 
-                  className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
+                  className="rounded-2xl p-4 xs:p-5 sm:p-6 md:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-2 xs:gap-3 mb-3 xs:mb-4">
                     <NeonDot color="rgba(99,102,241,1)" />
-                    <h3 className="text-2xl font-extrabold">{T.analysis}</h3>
+                    <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold">{T.analysis}</h3>
                   </div>
-                  <div className="prose max-w-none leading-8 text-base prose-invert">
+                  <div className="prose max-w-none leading-6 xs:leading-7 sm:leading-8 text-sm xs:text-base prose-invert">
                     {renderedTalk}
                   </div>
                 </motion.div>
@@ -857,18 +857,18 @@ function AINeonFactChecker() {
 
                 {/* Sources */}
                 <motion.div 
-                  className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
+                  className="rounded-2xl p-4 xs:p-5 sm:p-6 md:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <div className="flex items-center gap-3 mb-5">
+                  <div className="flex items-center gap-2 xs:gap-3 mb-4 xs:mb-5">
                     <NeonDot color="rgba(56,189,248,1)" />
-                    <h3 className="text-2xl font-extrabold">{T.sources}</h3>
+                    <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold">{T.sources}</h3>
                   </div>
 
                   {result.sources?.length ? (
-                    <ul className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                    <ul className="grid gap-2 xs:gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                       {result.sources.map((s, i) => (
                         <motion.li 
                           key={i}
@@ -882,7 +882,7 @@ function AINeonFactChecker() {
                     </ul>
                   ) : (
                     <motion.p 
-                      className="text-center py-8 text-white/60"
+                      className="text-center py-6 xs:py-8 text-white/60 text-sm xs:text-base"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
@@ -894,7 +894,7 @@ function AINeonFactChecker() {
 
                 {/* Compose Actions */}
                 <motion.div 
-                  className="flex gap-3 flex-wrap justify-center"
+                  className="flex gap-2 xs:gap-3 flex-wrap justify-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
@@ -903,7 +903,7 @@ function AINeonFactChecker() {
                     <motion.button
                       onClick={handleComposeNews}
                       disabled={composingNews}
-                      className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 disabled:opacity-60 disabled:cursor-not-allowed bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white shadow-[0_8px_32px_rgba(16,185,129,.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,.6)]"
+                      className="relative overflow-hidden group px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 sm:py-3.5 rounded-xl xs:rounded-2xl font-bold text-xs xs:text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 disabled:opacity-60 disabled:cursor-not-allowed bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white shadow-[0_8px_32px_rgba(16,185,129,.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,.6)] w-full xs:w-auto"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -933,7 +933,7 @@ function AINeonFactChecker() {
                     <motion.button
                       onClick={handleComposeTweet}
                       disabled={composingTweet}
-                      className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 disabled:opacity-60 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(29,161,242,.4)] hover:shadow-[0_12px_40px_rgba(29,161,242,.6)]"
+                      className="relative overflow-hidden group px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 sm:py-3.5 rounded-xl xs:rounded-2xl font-bold text-xs xs:text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 disabled:opacity-60 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(29,161,242,.4)] hover:shadow-[0_12px_40px_rgba(29,161,242,.6)] w-full xs:w-auto"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -963,15 +963,15 @@ function AINeonFactChecker() {
                 {/* Generated News Article */}
                 {result.news_article && (
                   <motion.div 
-                    className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
+                    className="rounded-2xl p-4 xs:p-5 sm:p-6 md:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
                   >
-                    <div className="flex items-center justify-between gap-4 mb-4">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between gap-3 xs:gap-4 mb-3 xs:mb-4 flex-wrap">
+                      <div className="flex items-center gap-2 xs:gap-3">
                         <NeonDot color="rgba(34,197,94,1)" />
-                        <h3 className="text-2xl font-extrabold">{T.generatedNews}</h3>
+                        <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold">{T.generatedNews}</h3>
                       </div>
                       <motion.button
                         onClick={() => {
@@ -986,7 +986,7 @@ function AINeonFactChecker() {
                             }, 2000);
                           });
                         }}
-                        className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white shadow-[0_8px_32px_rgba(16,185,129,.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,.6)]"
+                        className="relative overflow-hidden group px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 sm:py-3.5 rounded-xl xs:rounded-2xl font-bold text-xs xs:text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white shadow-[0_8px_32px_rgba(16,185,129,.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,.6)] w-full xs:w-auto"
                         whileHover={{ 
                           scale: 1.05,
                           rotateX: 5,
@@ -1054,8 +1054,8 @@ function AINeonFactChecker() {
                         </div>
                       </motion.button>
                     </div>
-                    <div className="rounded-xl p-6 border-2 bg-[#0a0a0a] border-white/20">
-                      <div className="prose max-w-none leading-8 text-base whitespace-pre-line prose-invert">
+                    <div className="rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 border-2 bg-[#0a0a0a] border-white/20">
+                      <div className="prose max-w-none leading-6 xs:leading-7 sm:leading-8 text-sm xs:text-base whitespace-pre-line prose-invert">
                         {result.news_article}
                       </div>
                     </div>
@@ -1065,15 +1065,15 @@ function AINeonFactChecker() {
                 {/* Generated Tweet */}
                 {result.x_tweet && (
                   <motion.div 
-                    className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
+                    className="rounded-2xl p-4 xs:p-5 sm:p-6 md:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
                   >
-                    <div className="flex items-center justify-between gap-4 mb-4">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between gap-3 xs:gap-4 mb-3 xs:mb-4 flex-wrap">
+                      <div className="flex items-center gap-2 xs:gap-3">
                         <NeonDot color="rgba(59,130,246,1)" />
-                        <h3 className="text-2xl font-extrabold">{T.tweetHeading}</h3>
+                        <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold">{T.tweetHeading}</h3>
                       </div>
                       <motion.button
                         onClick={() => {
@@ -1088,7 +1088,7 @@ function AINeonFactChecker() {
                             }, 2000);
                           });
                         }}
-                        className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(29,161,242,.4)] hover:shadow-[0_12px_40px_rgba(29,161,242,.6)]"
+                        className="relative overflow-hidden group px-4 xs:px-5 sm:px-6 py-2.5 xs:py-3 sm:py-3.5 rounded-xl xs:rounded-2xl font-bold text-xs xs:text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(29,161,242,.4)] hover:shadow-[0_12px_40px_rgba(29,161,242,.6)] w-full xs:w-auto"
                         whileHover={{ 
                           scale: 1.05,
                           rotateX: -5,
@@ -1163,21 +1163,21 @@ function AINeonFactChecker() {
                         </div>
                       </motion.button>
                     </div>
-                    <div className="rounded-xl p-4 border-2 bg-[#0a0a0a] border-white/20">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                    <div className="rounded-xl p-3 xs:p-4 sm:p-5 border-2 bg-[#0a0a0a] border-white/20">
+                      <div className="flex items-center gap-2 xs:gap-3 mb-2 xs:mb-3">
+                        <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm xs:text-base">
                           F
                         </div>
                         <div>
-                          <div className="font-bold text-white">
+                          <div className="font-bold text-white text-sm xs:text-base">
                             {T.tweetCardTitle}
                           </div>
-                          <div className="text-sm text-white/60">
+                          <div className="text-xs xs:text-sm text-white/60">
                             @factchecker
                           </div>
                         </div>
                       </div>
-                      <div className="text-base leading-relaxed text-white">
+                      <div className="text-sm xs:text-base leading-relaxed text-white">
                         {result.x_tweet}
                       </div>
                     </div>
@@ -1215,30 +1215,30 @@ function AINeonFactChecker() {
           ))}
         </div>
         
-        <div className="relative bg-slate-900 py-16">
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="relative bg-slate-900 py-8 xs:py-12 sm:py-16">
+          <div className="mx-auto max-w-6xl px-3 xs:px-4 sm:px-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 xs:gap-8">
               {/* JoinSoftWave Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-300 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">JS</span>
+              <div className="space-y-3 xs:space-y-4">
+                <div className="flex items-center gap-2 xs:gap-3">
+                  <div className="w-6 h-6 xs:w-8 xs:h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-300 flex items-center justify-center">
+                    <span className="text-white font-bold text-xs xs:text-sm">JS</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-200">JoinSoftWave</h3>
+                  <h3 className="text-lg xs:text-xl font-bold text-gray-200">JoinSoftWave</h3>
                 </div>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-gray-400 text-xs xs:text-sm leading-relaxed">
                   Specialized AI development, cybersecurity services, and enterprise software solutions. We provide AI-powered fraud detection, predictive maintenance, and managed SOC services.
                 </p>
-                <div className="flex gap-3">
+                <div className="flex gap-2 xs:gap-3 flex-wrap">
                   <motion.a
                     href="https://www.linkedin.com/company/join-softwave/?viewAsMember=true"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors"
+                    className="w-6 h-6 xs:w-8 xs:h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 xs:w-4 xs:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                   </motion.a>
@@ -1246,11 +1246,11 @@ function AINeonFactChecker() {
                     href="https://www.facebook.com/joinsoftwave"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors"
+                    className="w-6 h-6 xs:w-8 xs:h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition-colors"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 xs:w-4 xs:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
                   </motion.a>
@@ -1262,7 +1262,7 @@ function AINeonFactChecker() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 xs:w-4 xs:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                   </motion.a>
@@ -1274,7 +1274,7 @@ function AINeonFactChecker() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 xs:w-4 xs:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
                     </svg>
                   </motion.a>
@@ -1282,12 +1282,12 @@ function AINeonFactChecker() {
               </div>
 
               {/* Services Section */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-200">Services</h3>
-                <ul className="space-y-2">
+              <div className="space-y-3 xs:space-y-4">
+                <h3 className="text-base xs:text-lg font-semibold text-gray-200">Services</h3>
+                <ul className="space-y-1 xs:space-y-2">
                   {['AI Fraud Detection', 'Predictive Maintenance', 'Managed SOC Services', 'Cloud Security Compliance', 'Intelligent Chatbots', 'Enterprise Software Development'].map((service) => (
                     <li key={service}>
-                      <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors text-xs xs:text-sm">
                         {service}
                       </a>
                     </li>
@@ -1296,12 +1296,12 @@ function AINeonFactChecker() {
               </div>
 
               {/* Company Section */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-200">Company</h3>
-                <ul className="space-y-2">
+              <div className="space-y-3 xs:space-y-4">
+                <h3 className="text-base xs:text-lg font-semibold text-gray-200">Company</h3>
+                <ul className="space-y-1 xs:space-y-2">
                   {['About Us', 'Our Team', 'Careers', 'Blog', 'Case Studies'].map((item) => (
                     <li key={item}>
-                      <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors text-xs xs:text-sm">
                         {item}
                       </a>
                     </li>
@@ -1310,12 +1310,12 @@ function AINeonFactChecker() {
               </div>
 
               {/* Resources Section */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-200">Resources</h3>
-                <ul className="space-y-2">
+              <div className="space-y-3 xs:space-y-4">
+                <h3 className="text-base xs:text-lg font-semibold text-gray-200">Resources</h3>
+                <ul className="space-y-1 xs:space-y-2">
                   {['Documentation', 'API Reference', 'Support Center', 'Community'].map((resource) => (
                     <li key={resource}>
-                      <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors text-xs xs:text-sm">
                         {resource}
                       </a>
                     </li>

@@ -88,7 +88,7 @@ const SourceStatistics = ({ statistics, language = 'arabic' }) => {
           delay,
           ease: "easeOut"
         }}
-        className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${colors.bg} border ${colors.border} backdrop-blur-sm`}
+        className={`relative overflow-hidden rounded-2xl p-4 xs:p-5 sm:p-6 bg-gradient-to-br ${colors.bg} border ${colors.border} backdrop-blur-sm`}
       >
         {/* Animated background glow */}
         <motion.div
@@ -100,10 +100,10 @@ const SourceStatistics = ({ statistics, language = 'arabic' }) => {
         {/* Content */}
         <div className="relative z-10">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between mb-3 xs:mb-4">
+            <div className="flex items-center gap-2 xs:gap-3">
               <motion.span
-                className="text-2xl"
+                className="text-xl xs:text-2xl"
                 animate={{ 
                   rotate: [0, 10, -10, 0],
                   scale: [1, 1.1, 1]
@@ -117,10 +117,10 @@ const SourceStatistics = ({ statistics, language = 'arabic' }) => {
                 {colors.icon}
               </motion.span>
               <div>
-                <h3 className={`text-lg font-bold ${colors.text}`}>
+                <h3 className={`text-base xs:text-lg font-bold ${colors.text}`}>
                   {label}
                 </h3>
-                <p className="text-sm text-white/60">
+                <p className="text-xs xs:text-sm text-white/60">
                   {count} {count === 1 ? T.sources : T.sources_plural}
                 </p>
               </div>
@@ -128,7 +128,7 @@ const SourceStatistics = ({ statistics, language = 'arabic' }) => {
             
             {/* Percentage badge */}
             <motion.div
-              className={`px-3 py-1 rounded-full bg-gradient-to-r ${colors.bar} text-white font-bold text-lg`}
+              className={`px-2 xs:px-3 py-1 rounded-full bg-gradient-to-r ${colors.bar} text-white font-bold text-sm xs:text-base sm:text-lg`}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: delay + 0.3, type: "spring", stiffness: 200 }}
@@ -197,35 +197,35 @@ const SourceStatistics = ({ statistics, language = 'arabic' }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
+      className="rounded-2xl p-4 xs:p-5 sm:p-6 md:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
     >
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-2 xs:gap-3 mb-4 xs:mb-5 sm:mb-6 flex-wrap">
         <motion.div
-          className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300"
+          className="w-2.5 h-2.5 xs:w-3 xs:h-3 rounded-full bg-gradient-to-r from-blue-400 to-cyan-300"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.7, 1, 0.7]
           }}
           transition={{ duration: 2, repeat: Infinity }}
         />
-        <h3 className="text-2xl font-extrabold text-white">
+        <h3 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-white">
           {T.title}
         </h3>
         <motion.div
-          className="ml-auto px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-400/20 border border-blue-400/30"
+          className="ml-auto px-2 xs:px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-400/20 border border-blue-400/30"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         >
-          <span className="text-blue-300 font-semibold">
+          <span className="text-blue-300 font-semibold text-xs xs:text-sm">
             {total_sources} {total_sources === 1 ? T.sources : T.sources_plural}
           </span>
         </motion.div>
       </div>
 
       {/* Statistics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-3 xs:gap-4">
         <StatCard
           type="supporting"
           percentage={supporting_percentage}
@@ -256,20 +256,20 @@ const SourceStatistics = ({ statistics, language = 'arabic' }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.6 }}
-        className="mt-6 p-4 rounded-xl bg-gradient-to-r from-slate-800/30 to-slate-700/30 border border-white/10"
+        className="mt-4 xs:mt-5 sm:mt-6 p-3 xs:p-4 rounded-xl bg-gradient-to-r from-slate-800/30 to-slate-700/30 border border-white/10"
       >
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-xs xs:text-sm flex-wrap gap-2">
           <span className="text-white/70">
             {language === 'arabic' ? 'التحليل الإجمالي:' : 'Overall Analysis:'}
           </span>
-          <div className="flex items-center gap-4">
-            <span className="text-emerald-300 font-semibold">
+          <div className="flex items-center gap-2 xs:gap-3 sm:gap-4 flex-wrap">
+            <span className="text-emerald-300 font-semibold text-xs xs:text-sm">
               {supporting_percentage.toFixed(1)}% {language === 'arabic' ? 'مؤيدة' : 'Supporting'}
             </span>
-            <span className="text-red-300 font-semibold">
+            <span className="text-red-300 font-semibold text-xs xs:text-sm">
               {opposing_percentage.toFixed(1)}% {language === 'arabic' ? 'معارضة' : 'Opposing'}
             </span>
-            <span className="text-gray-300 font-semibold">
+            <span className="text-gray-300 font-semibold text-xs xs:text-sm">
               {neutral_percentage.toFixed(1)}% {language === 'arabic' ? 'محايدة' : 'Neutral'}
             </span>
           </div>
