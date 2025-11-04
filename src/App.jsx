@@ -256,10 +256,6 @@ function AINeonFactChecker() {
 
       console.log("📡 Response status:", res.status, res.statusText);
       
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-
       const text = await res.text();
       console.log("📄 Response text:", text);
       
@@ -277,6 +273,7 @@ function AINeonFactChecker() {
         throw new Error("Invalid JSON response from server");
       }
 
+      // إذا كان ok = false، اعرض رسالة الخطأ من الـ API
       if (!data?.ok) {
         throw new Error(data?.error || T.errorFetch);
       }
@@ -781,11 +778,30 @@ function AINeonFactChecker() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="mt-4 rounded-xl px-4 py-3 text-red-200 bg-red-900/30 border border-red-800/50"
+                className="mt-6 rounded-2xl px-6 py-5 bg-gradient-to-br from-red-950/80 via-red-900/70 to-red-950/80 border-2 border-red-700/70 shadow-[0_8px_32px_rgba(185,28,28,0.4)]"
                 role="alert"
                 aria-live="polite"
+                dir={isArabic ? 'rtl' : 'ltr'}
               >
-                {err}
+                <div className="flex items-center gap-4">
+                  <motion.span 
+                    className="text-4xl flex-shrink-0"
+                    animate={{ 
+                      scale: [1, 1.15, 1],
+                      rotate: [0, -10, 10, 0]
+                    }}
+                    transition={{ 
+                      duration: 2.5, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                  >
+                    ⚠️
+                  </motion.span>
+                  <p className="text-white/95 font-medium text-[15px] sm:text-base leading-loose flex-1">
+                    {err}
+                  </p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
