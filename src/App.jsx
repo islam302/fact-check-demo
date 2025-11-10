@@ -178,7 +178,7 @@ function renderTalkSmart(talk) {
 }
 
 // ======= Component =======
-function AINeonFactChecker() {
+function AINewsReview() {
   const { isArabic, language } = useLanguage();
   const T = TRANSLATIONS[language] || TRANSLATIONS.english;
   const [query, setQuery] = useState("");
@@ -1063,7 +1063,7 @@ function CodeBar({ delay = "0s" }) {
 export default function App() {
   return (
       <LanguageProvider>
-        <AINeonFactChecker />
+        <AINewsReview />
       </LanguageProvider>
   );
 }
