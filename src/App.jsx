@@ -2,84 +2,52 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
 import { LanguageToggle } from "./components/LanguageToggle";
-import SourceStatistics from "./components/SourceStatistics";
 import joinLogo from "./assets/join-logo.jpg";
 
 // ======= Config =======
-const API_BASE_URL = "https://fact-check-api-32dx.onrender.com";  // Using localhost as in Postman
-const FACT_CHECK_URL = `${API_BASE_URL}/fact_check/`;  // Main endpoint from Postman
-const COMPOSE_NEWS_URL = `${API_BASE_URL}/fact_check/compose_news/`;
-const COMPOSE_TWEET_URL = `${API_BASE_URL}/fact_check/compose_tweet/`;
+const REVIEW_URL = "http://62.72.22.223/api/review/";
 
 // ======= i18n (AR / EN) =======
 const TRANSLATIONS = {
   arabic: {
     logoAlt: "شعار الجامعة",
-    title: "التحقق من الأخبار",
-    inputLabel: "اكتب عنوان الخبر المراد التحقق منه",
-    placeholder: "مثال: الرئيس الأمريكي أعلن عن قرار جديد...",
-    ariaInput: "مربع إدخال النص للتحقق من الخبر",
-    errorNoQuery: "اكتب الخبر أولًا.",
+    title: "مراجعة الأخبار",
+    inputLabel: "ألصق نص المقال المراد مراجعته",
+    ariaInput: "مربع إدخال نص المقال لمراجعته",
+    errorNoQuery: "ألصق نص الخبر أولًا.",
     errorFetch: "تعذر الحصول على النتيجة",
     errorUnexpected: "حدث خطأ غير متوقع.",
-    status: "الحالة",
-    analysis: "التحليل",
-    sources: "المصادر",
-    none: "لا يوجد",
-    noSources: "لا توجد مصادر متاحة.",
-    generatedNews: "خبر مصاغ",
-    copyGeneratedNewsAria: "نسخ الخبر المصاغ",
-    copyGeneratedTweetAria: "نسخ التغريدة المصاغة",
-    buttonCopyNewsText: "نسخ الخبر",
-    buttonCopyTweetText: "نسخ التغريدة",
-    tweetHeading: "تغريدة مصاغة",
-    tweetCardTitle: "متحقق من الأخبار",
-    copyVerificationAria: "نسخ نتيجة التحقق",
+    reviewHeading: "النتيجة النهائية للمراجعة",
+    copyVerificationAria: "نسخ نتيجة المراجعة",
     copyResult: "نسخ النتيجة",
     copied: "تم النسخ!",
-    checkBtnAria: "زر التحقق من الخبر",
-    checking: "جاري التحقق…",
-    checkNow: "تحقق الآن",
-    composeNewsBtn: "صياغة خبر",
-    composeTweetBtn: "صياغة تغريدة",
-    composingNews: "جاري صياغة الخبر…",
-    composingTweet: "جاري صياغة التغريدة…",
-    heroLine: null,
-    loaderLine: "محرك الذكاء الاصطناعي يعمل… تجميع الأدلة، مطابقة الحقائق، وتكوين الحكم.",
+    checkBtnAria: "زر مراجعة الخبر",
+    checking: "جاري المراجعة…",
+    checkNow: "راجع الآن",
+    heroDescription:
+      "ضع نص المقال كاملاً، وسنراجع المحتوى ونقدم لك الخلاصة النهائية بعد التحليل.",
+    loaderLine: "محرك المراجعة يعمل… قراءة النص وتحليل المحتوى لإعداد الخلاصة.",
   },
   english: {
     logoAlt: "University Logo",
-    title: "Fact Checker",
-    inputLabel: "Enter the news headline to fact-check",
-    placeholder: "Example: The US President announced a new decision...",
-    ariaInput: "Text input for fact-checking",
-    errorNoQuery: "Please enter the news first.",
+    title: "News Review",
+    inputLabel: "Paste the article text to review",
+    placeholder: "Example: Paste the full news article here...",
+    ariaInput: "Text input for article review",
+    errorNoQuery: "Please paste the article text first.",
     errorFetch: "Failed to get result",
     errorUnexpected: "An unexpected error occurred.",
-    status: "Status",
-    analysis: "Analysis",
-    sources: "Sources",
-    none: "None",
-    noSources: "No sources available.",
-    generatedNews: "Generated News Article",
-    copyGeneratedNewsAria: "Copy generated news article",
-    copyGeneratedTweetAria: "Copy generated tweet",
-    buttonCopyNewsText: "Create Article",
-    buttonCopyTweetText: "X Tweet",
-    tweetHeading: "Generated Tweet",
-    tweetCardTitle: "Fact Checker",
-    copyVerificationAria: "Copy verification result",
+    reviewHeading: "Final Review Result",
+    copyVerificationAria: "Copy review result",
     copyResult: "Copy Result",
     copied: "Copied!",
-    checkBtnAria: "Fact check button",
-    checking: "Checking...",
-    checkNow: "Check Now",
-    composeNewsBtn: "Compose News",
-    composeTweetBtn: "Compose Tweet",
-    composingNews: "Composing news…",
-    composingTweet: "Composing tweet…",
-    heroLine: null,
-    loaderLine: "AI engine is working… gathering evidence, matching facts, and forming the verdict.",
+    checkBtnAria: "Review article button",
+    checking: "Reviewing...",
+    checkNow: "Review Now",
+    heroDescription:
+      "Paste the full article text and we'll analyze it to deliver a final AI-generated review.",
+    loaderLine:
+      "The review engine is working… reading the article, analyzing the content, and shaping the final insight.",
   }
 };
 
@@ -214,11 +182,9 @@ function AINeonFactChecker() {
   const { isArabic, language } = useLanguage();
   const T = TRANSLATIONS[language] || TRANSLATIONS.english;
   const [query, setQuery] = useState("");
-  const [result, setResult] = useState(null);
+  const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [composingNews, setComposingNews] = useState(false);
-  const [composingTweet, setComposingTweet] = useState(false);
   const textareaRef = useRef(null);
 
   // Auto-resize textarea
@@ -232,7 +198,7 @@ function AINeonFactChecker() {
 
   async function handleCheck() {
     setErr("");
-    setResult(null);
+    setReview("");
     const q = query.trim();
     if (!q) {
       setErr(T.errorNoQuery);
@@ -241,24 +207,24 @@ function AINeonFactChecker() {
 
     setLoading(true);
     try {
-      console.log("🔍 Sending request to:", FACT_CHECK_URL);
-      console.log("📝 Request body:", { 
-        query: q
+      console.log("🔍 Sending review request to:", REVIEW_URL);
+      console.log("📝 Request body:", {
+        news_text: q,
       });
-      
-      const res = await fetch(FACT_CHECK_URL, {
+
+      const res = await fetch(REVIEW_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          query: q
+        body: JSON.stringify({
+          news_text: q,
         }),
       });
 
       console.log("📡 Response status:", res.status, res.statusText);
-      
+
       const text = await res.text();
       console.log("📄 Response text:", text);
-      
+
       if (!text.trim()) {
         throw new Error("Server returned empty response");
       }
@@ -273,20 +239,15 @@ function AINeonFactChecker() {
         throw new Error("Invalid JSON response from server");
       }
 
-      // إذا كان ok = false، اعرض رسالة الخطأ من الـ API
-      if (!data?.ok) {
+      if (!res.ok) {
         throw new Error(data?.error || T.errorFetch);
       }
 
-      setResult({
-        case: data.case || "غير متوفر",
-        talk: data.talk || "لا يوجد تفسير.",
-        sources: Array.isArray(data.sources) ? data.sources : [],
-        news_article: data.news_article || null,
-        x_tweet: data.x_tweet || null,
-        source_statistics: data.source_statistics || null,
-      });
-      
+      if (!data?.review) {
+        throw new Error(T.errorUnexpected);
+      }
+
+      setReview(data.review);
     } catch (e) {
       console.error("Error in handleCheck:", e);
       setErr(e.message || T.errorUnexpected);
@@ -295,152 +256,15 @@ function AINeonFactChecker() {
     }
   }
 
-  async function handleComposeNews() {
-    if (!result) return;
-    
-    setComposingNews(true);
-    setErr("");
-    try {
-      const requestBody = {
-        claim_text: query.trim(),
-        case: result.case,
-        talk: result.talk,
-        sources: result.sources,
-        lang: language === "arabic" ? "ar" : language === "french" ? "fr" : "en"
-      };
-      
-      console.log("📰 Composing news via:", COMPOSE_NEWS_URL);
-      console.log("📝 News request body:", requestBody);
-      
-      const res = await fetch(COMPOSE_NEWS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
-
-      console.log("📡 News response status:", res.status, res.statusText);
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-
-      const text = await res.text();
-      console.log("📄 News response text:", text);
-      
-      if (!text.trim()) {
-        throw new Error("Server returned empty response");
-      }
-
-      let data;
-      try {
-        data = JSON.parse(text);
-        console.log("✅ News parsed JSON data:", data);
-      } catch (parseError) {
-        console.error("JSON Parse Error in compose news:", parseError);
-        console.error("Response text:", text);
-        throw new Error("Invalid JSON response from server");
-      }
-      
-      if (data?.ok && data?.news_article) {
-        setResult(prev => ({
-          ...prev,
-          news_article: data.news_article
-        }));
-      } else {
-        throw new Error(data?.error || T.errorFetch);
-      }
-    } catch (e) {
-      console.error("Error in handleComposeNews:", e);
-      setErr(e.message || T.errorUnexpected);
-    } finally {
-      setComposingNews(false);
-    }
-  }
-
-  async function handleComposeTweet() {
-    if (!result) return;
-    
-    setComposingTweet(true);
-    setErr("");
-    try {
-      const requestBody = {
-        claim_text: query.trim(),
-        case: result.case,
-        talk: result.talk,
-        sources: result.sources,
-        lang: language === "arabic" ? "ar" : language === "french" ? "fr" : "en"
-      };
-      
-      console.log("🐦 Composing tweet via:", COMPOSE_TWEET_URL);
-      console.log("📝 Tweet request body:", requestBody);
-      
-      const res = await fetch(COMPOSE_TWEET_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
-
-      console.log("📡 Tweet response status:", res.status, res.statusText);
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-
-      const text = await res.text();
-      console.log("📄 Tweet response text:", text);
-      
-      if (!text.trim()) {
-        throw new Error("Server returned empty response");
-      }
-
-      let data;
-      try {
-        data = JSON.parse(text);
-        console.log("✅ Tweet parsed JSON data:", data);
-      } catch (parseError) {
-        console.error("JSON Parse Error in compose tweet:", parseError);
-        console.error("Response text:", text);
-        throw new Error("Invalid JSON response from server");
-      }
-      
-      if (data?.ok && data?.x_tweet) {
-        setResult(prev => ({
-          ...prev,
-          x_tweet: data.x_tweet
-        }));
-      } else {
-        throw new Error(data?.error || T.errorFetch);
-      }
-    } catch (e) {
-      console.error("Error in handleComposeTweet:", e);
-      setErr(e.message || T.errorUnexpected);
-    } finally {
-      setComposingTweet(false);
-    }
-  }
-
   function copyAll() {
-    if (!result) return;
-    let text =
-      `${T.status}: ${result.case}\n\n` +
-      `${T.analysis}: ${result.talk}\n\n` +
-      `${T.sources}:\n` +
-      (result.sources?.length
-        ? result.sources.map((s) => `- ${s.title || getDomain(s?.url)} — ${s.url}`).join("\n")
-        : `- ${T.none}`);
-    
-    if (result.news_article) {
-      text += `\n\n${T.generatedNews}:\n${result.news_article}`;
-    }
-    
-    if (result.x_tweet) {
-      text += `\n\n${T.tweetHeading}:\n${result.x_tweet}`;
-    }
-    
-    navigator.clipboard.writeText(text).then(() => {
+    if (!review) return;
+
+    navigator.clipboard.writeText(review).then(() => {
       // Show success feedback
       const originalText = T.copyResult;
-      const button = document.querySelector('[aria-label*="نسخ"]') || document.querySelector('[aria-label*="Copy"]');
+      const button =
+        document.querySelector('[aria-label*="نسخ"]') ||
+        document.querySelector('[aria-label*="Copy"]');
       if (button) {
         const originalContent = button.textContent;
         button.textContent = T.copied;
@@ -453,7 +277,7 @@ function AINeonFactChecker() {
     });
   }
 
-  const renderedTalk = useMemo(() => renderTalkSmart(result?.talk || ""), [result?.talk]);
+  const renderedReview = useMemo(() => renderTalkSmart(review || ""), [review]);
 
   return (
     <div dir={isArabic ? 'rtl' : 'ltr'} className="min-h-screen relative overflow-hidden transition-colors duration-500 px-3 sm:px-0 bg-[#05070e] text-white">
@@ -628,19 +452,7 @@ function AINeonFactChecker() {
           {T.title}
         </h1>
         <p className="text-xs sm:text-sm md:text-base text-center max-w-[90vw] sm:max-w-xl md:max-w-2xl text-white/70">
-          {language === 'arabic' ? (
-            <>
-              أدخل الخبر، وسنبحث ونحلل ونرجّع لك <span className="text-teal-300">{TRANSLATIONS.arabic.status}</span>،
-              <span className="text-indigo-300"> {TRANSLATIONS.arabic.analysis}</span>، و
-              <span className="text-fuchsia-300"> {TRANSLATIONS.arabic.sources}</span>
-            </>
-          ) : (
-            <>
-              Enter your claim, and we'll search, analyze, and return the <span className="text-teal-300">{TRANSLATIONS.english.status.toLowerCase()}</span>,
-              <span className="text-indigo-300"> {TRANSLATIONS.english.analysis.toLowerCase()}</span>, and
-              <span className="text-fuchsia-300"> {TRANSLATIONS.english.sources.toLowerCase()}</span>
-            </>
-          )}
+          {T.heroDescription}
         </p>
       </motion.div>
 
@@ -756,7 +568,7 @@ function AINeonFactChecker() {
                 <div className="absolute -inset-1 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400" />
               </motion.button>
 
-              {result && (
+              {review && (
                 <motion.button
                   onClick={copyAll}
                   className="px-5 py-2.5 rounded-xl transition font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400/50 bg-white/10 hover:bg-white/15 border border-white/10"
@@ -817,7 +629,7 @@ function AINeonFactChecker() {
 
           {/* Result */}
           <AnimatePresence>
-            {result && !loading && (
+            {review && !loading && (
               <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -825,380 +637,20 @@ function AINeonFactChecker() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 className="mt-8 grid gap-6"
               >
-                {/* Case */}
-                <motion.div 
-                  className="rounded-2xl p-6 sm:p-7 bg-gradient-to-br from-emerald-600/90 to-teal-500/80 shadow-[0_15px_50px_rgba(16,185,129,.4)]"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <div className="flex items-center gap-3">
-                      <NeonDot color="rgba(16,185,129,1)" />
-                      <h3 className="text-2xl font-extrabold">{T.status}</h3>
-                    </div>
-                    <Badge>{result.case}</Badge>
-                  </div>
-                </motion.div>
-
-                {/* Talk */}
-                <motion.div 
+                <motion.div
                   className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <NeonDot color="rgba(99,102,241,1)" />
-                    <h3 className="text-2xl font-extrabold">{T.analysis}</h3>
+                    <h3 className="text-2xl font-extrabold">{T.reviewHeading}</h3>
                   </div>
-                  <div className="prose max-w-none leading-8 text-base prose-invert">
-                    {renderedTalk}
+                  <div className="prose max-w-none leading-8 text-base prose-invert whitespace-pre-line">
+                    {renderedReview}
                   </div>
                 </motion.div>
-
-                {/* Source Statistics */}
-                {result.source_statistics && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <SourceStatistics 
-                      statistics={result.source_statistics} 
-                      language={language}
-                    />
-                  </motion.div>
-                )}
-
-                {/* Sources */}
-                <motion.div 
-                  className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <div className="flex items-center gap-3 mb-5">
-                    <NeonDot color="rgba(56,189,248,1)" />
-                    <h3 className="text-2xl font-extrabold">{T.sources}</h3>
-                  </div>
-
-                  {result.sources?.length ? (
-                    <ul className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
-                      {result.sources.map((s, i) => (
-                        <motion.li 
-                          key={i}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.5 + i * 0.1 }}
-                        >
-                          <LinkChip href={s?.url} label={s?.title} big />
-                        </motion.li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <motion.p 
-                      className="text-center py-8 text-white/60"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                    >
-                      {T.noSources}
-                    </motion.p>
-                  )}
-                </motion.div>
-
-                {/* Compose Actions */}
-                <motion.div 
-                  className="flex gap-3 flex-wrap justify-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  {!result.news_article && (
-                    <motion.button
-                      onClick={handleComposeNews}
-                      disabled={composingNews}
-                      className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 disabled:opacity-60 disabled:cursor-not-allowed bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white shadow-[0_8px_32px_rgba(16,185,129,.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,.6)]"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <span className="relative z-10 flex items-center gap-2">
-                        {composingNews ? (
-                          <>
-                            <motion.div
-                              className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            />
-                            <span>{T.composingNews}</span>
-                          </>
-                        ) : (
-                          <>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                              <path d="M19 3H8a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v8a3 3 0 0 0 3 3h13a3 3 0 0 0 3-3V5a2 2 0 0 0-2-2Zm-3 4h3v2h-3V7Zm-8 0h6v2H8V7Zm0 4h11v2H8v-2Zm0 4h11v2H8v-2ZM5 9h1v8a1 1 0 0 1-1-1V9Z"/>
-                            </svg>
-                            <span>{T.composeNewsBtn}</span>
-                          </>
-                        )}
-                      </span>
-                    </motion.button>
-                  )}
-                  
-                  {!result.x_tweet && (
-                    <motion.button
-                      onClick={handleComposeTweet}
-                      disabled={composingTweet}
-                      className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 disabled:opacity-60 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(29,161,242,.4)] hover:shadow-[0_12px_40px_rgba(29,161,242,.6)]"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <span className="relative z-10 flex items-center gap-2">
-                        {composingTweet ? (
-                          <>
-                            <motion.div
-                              className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            />
-                            <span>{T.composingTweet}</span>
-                          </>
-                        ) : (
-                          <>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                            </svg>
-                            <span>{T.composeTweetBtn}</span>
-                          </>
-                        )}
-                      </span>
-                    </motion.button>
-                  )}
-                </motion.div>
-
-                {/* Generated News Article */}
-                {result.news_article && (
-                  <motion.div 
-                    className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
-                  >
-                    <div className="flex items-center justify-between gap-4 mb-4">
-                      <div className="flex items-center gap-3">
-                        <NeonDot color="rgba(34,197,94,1)" />
-                        <h3 className="text-2xl font-extrabold">{T.generatedNews}</h3>
-                      </div>
-                      <motion.button
-                        onClick={() => {
-                          navigator.clipboard.writeText(result.news_article).then(() => {
-                            const button = event.target;
-                            const originalText = button.textContent;
-                            button.textContent = `${T.copied} ✓`;
-                            button.style.background = 'linear-gradient(135deg, #10b981, #059669, #047857)';
-                            setTimeout(() => {
-                              button.textContent = originalText;
-                              button.style.background = '';
-                            }, 2000);
-                          });
-                        }}
-                        className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white shadow-[0_8px_32px_rgba(16,185,129,.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,.6)]"
-                        whileHover={{ 
-                          scale: 1.05,
-                          rotateX: 5,
-                          y: -2
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                        aria-label={T.copyGeneratedNewsAria}
-                      >
-                        {/* Animated background gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 from-emerald-500 via-green-400 to-teal-400" />
-                        
-                        {/* Shimmer effect */}
-                        <div className="absolute inset-0 -top-2 -left-2 w-[calc(100%+16px)] h-[calc(100%+16px)] bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                        
-                        {/* Newspaper icon and text */}
-                        <span className="relative z-10 flex items-center gap-2">
-                          <motion.svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="text-white"
-                            animate={{ 
-                              rotate: [0, 5, -5, 0],
-                              scale: [1, 1.1, 1]
-                            }}
-                            transition={{ 
-                              duration: 2, 
-                              repeat: Infinity, 
-                              repeatDelay: 3 
-                            }}
-                            aria-hidden="true"
-                          >
-                            <path d="M19 3H8a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v8a3 3 0 0 0 3 3h13a3 3 0 0 0 3-3V5a2 2 0 0 0-2-2Zm-3 4h3v2h-3V7Zm-8 0h6v2H8V7Zm0 4h11v2H8v-2Zm0 4h11v2H8v-2ZM5 9h1v8a1 1 0 0 1-1-1V9Z"/>
-                          </motion.svg>
-                          <span>{T.buttonCopyNewsText}</span>
-                        </span>
-                        
-                        {/* Glow effect */}
-                        <div className="absolute -inset-1 rounded-2xl blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-300 bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400" />
-                        
-                        {/* Floating particles */}
-                        <div className="absolute inset-0 pointer-events-none">
-                          {[...Array(3)].map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="absolute w-1 h-1 bg-white/60 rounded-full"
-                              style={{
-                                left: `${20 + i * 25}%`,
-                                top: `${30 + i * 15}%`,
-                              }}
-                              animate={{
-                                y: [-5, -15, -5],
-                                opacity: [0, 1, 0],
-                                scale: [0.5, 1, 0.5]
-                              }}
-                              transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                delay: i * 0.3,
-                                repeatDelay: 1
-                              }}
-                            />
-                          ))}
-                        </div>
-                      </motion.button>
-                    </div>
-                    <div className="rounded-xl p-6 border-2 bg-[#0a0a0a] border-white/20">
-                      <div className="prose max-w-none leading-8 text-base whitespace-pre-line prose-invert">
-                        {result.news_article}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* Generated Tweet */}
-                {result.x_tweet && (
-                  <motion.div 
-                    className="rounded-2xl p-6 sm:p-7 bg-white/8 border border-white/15 shadow-[0_10px_30px_rgba(0,0,0,.2)]"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 }}
-                  >
-                    <div className="flex items-center justify-between gap-4 mb-4">
-                      <div className="flex items-center gap-3">
-                        <NeonDot color="rgba(59,130,246,1)" />
-                        <h3 className="text-2xl font-extrabold">{T.tweetHeading}</h3>
-                      </div>
-                      <motion.button
-                        onClick={() => {
-                          navigator.clipboard.writeText(result.x_tweet).then(() => {
-                            const button = event.target;
-                            const originalText = button.textContent;
-                            button.textContent = `${T.copied} ✓`;
-                            button.style.background = 'linear-gradient(135deg, #1da1f2, #0d8bd9, #0570de)';
-                            setTimeout(() => {
-                              button.textContent = originalText;
-                              button.style.background = '';
-                            }, 2000);
-                          });
-                        }}
-                        className="relative overflow-hidden group px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(29,161,242,.4)] hover:shadow-[0_12px_40px_rgba(29,161,242,.6)]"
-                        whileHover={{ 
-                          scale: 1.05,
-                          rotateX: -5,
-                          y: -2
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                        aria-label={T.copyGeneratedTweetAria}
-                      >
-                        {/* Animated background gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 from-blue-500 via-sky-400 to-cyan-400" />
-                        
-                        {/* Shimmer effect */}
-                        <div className="absolute inset-0 -top-2 -left-2 w-[calc(100%+16px)] h-[calc(100%+16px)] bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                        
-                        {/* X/Twitter icon and text */}
-                        <span className="relative z-10 flex items-center gap-2">
-                          <motion.svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="text-white"
-                            animate={{ 
-                              rotate: [0, 5, -5, 0],
-                              scale: [1, 1.1, 1]
-                            }}
-                            transition={{ 
-                              duration: 2, 
-                              repeat: Infinity, 
-                              repeatDelay: 3 
-                            }}
-                          >
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                          </motion.svg>
-                          <span>{T.buttonCopyTweetText}</span>
-                        </span>
-                        
-                        {/* Glow effect */}
-                        <div className="absolute -inset-1 rounded-2xl blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-300 bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-400" />
-                        
-                        {/* Flying tweet particles */}
-                        <div className="absolute inset-0 pointer-events-none">
-                          {[...Array(4)].map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="absolute text-xs opacity-60"
-                              style={{
-                                left: `${15 + i * 20}%`,
-                                top: `${25 + i * 10}%`,
-                              }}
-                              animate={{
-                                x: [0, 10, 0],
-                                y: [-3, -12, -3],
-                                opacity: [0, 0.8, 0],
-                                scale: [0.3, 0.8, 0.3]
-                              }}
-                              transition={{
-                                duration: 1.8,
-                                repeat: Infinity,
-                                delay: i * 0.4,
-                                repeatDelay: 2
-                              }}
-                            >
-                              {i % 2 === 0 ? '💬' : '🔄'}
-                            </motion.div>
-                          ))}
-                        </div>
-                        
-                        {/* Pulsing border */}
-                        <div className="absolute inset-0 rounded-2xl border-2 border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="absolute inset-0 rounded-2xl border-2 border-white/10 animate-pulse" />
-                        </div>
-                      </motion.button>
-                    </div>
-                    <div className="rounded-xl p-4 border-2 bg-[#0a0a0a] border-white/20">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                          F
-                        </div>
-                        <div>
-                          <div className="font-bold text-white">
-                            {T.tweetCardTitle}
-                          </div>
-                          <div className="text-sm text-white/60">
-                            @factchecker
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-base leading-relaxed text-white">
-                        {result.x_tweet}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -1240,7 +692,14 @@ function AINeonFactChecker() {
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-300 flex items-center justify-center">
                     <span className="text-white font-bold text-sm">JS</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-200">JoinSoftWave</h3>
+                  <a
+                    href="https://join-softwave.online/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xl font-bold text-gray-200 hover:text-white transition-colors"
+                  >
+                    JoinSoftWave
+                  </a>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
                   Specialized AI development, cybersecurity services, and enterprise software solutions. We provide AI-powered fraud detection, predictive maintenance, and managed SOC services.
@@ -1279,7 +738,11 @@ function AINeonFactChecker() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm7.938 9h-3.01a15.966 15.966 0 00-1.3-5.568A8.026 8.026 0 0119.938 11zM12 4a13.978 13.978 0 012.103 6H9.897A13.978 13.978 0 0112 4zM8.072 4.432A15.966 15.966 0 006.072 11H3.062a8.026 8.026 0 015.01-6.568zM4.062 13h3.01a15.966 15.966 0 001.3 5.568A8.026 8.026 0 014.062 13zm5.835 0h4.206A13.966 13.966 0 0112 20a13.966 13.966 0 01-2.103-7zm6.031 0h3.01a8.026 8.026 0 01-5.01 6.568A15.966 15.966 0 0015.928 13z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </motion.a>
                   <motion.a
@@ -1487,15 +950,6 @@ function NeonDot({ color = "rgba(99,102,241,1)" }) {
       className="inline-block w-2.5 h-2.5 rounded-full"
       style={{ background: color, boxShadow: `0 0 18px ${color}` }}
     />
-  );
-}
-
-function Badge({ children }) {
-  return (
-    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-[2px] bg-black/25 border border-white/15">
-      <span className="w-1.5 h-1.5 rounded-full bg-white/70" />
-      <span className="text-sm font-semibold">{children}</span>
-    </span>
   );
 }
 
