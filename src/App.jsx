@@ -11,7 +11,7 @@ const REVIEW_URL = "/api/review";
 const TRANSLATIONS = {
   arabic: {
     logoAlt: "شعار الجامعة",
-    title: "مراجعة الأخبار",
+    title: "معالجة الخبر",
     inputLabel: "ألصق نص المقال المراد مراجعته",
     ariaInput: "مربع إدخال نص المقال لمراجعته",
     errorNoQuery: "ألصق نص الخبر أولًا.",
@@ -23,7 +23,7 @@ const TRANSLATIONS = {
     copied: "تم النسخ!",
     checkBtnAria: "زر مراجعة الخبر",
     checking: "جاري المراجعة…",
-    checkNow: "راجع الآن",
+    checkNow: "ابدأ الآن",
     heroDescription:
       "ضع نص المقال كاملاً، وسنراجع المحتوى ونقدم لك الخلاصة النهائية بعد التحليل.",
     loaderLine: "محرك المراجعة يعمل… قراءة النص وتحليل المحتوى لإعداد الخلاصة.",
